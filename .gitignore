@@ -1,0 +1,10 @@
+*
+!/.gitignore
+!/LICENSE
+!/index.html
+!/styles.css
+!/script.js
+!/assets/
+!/assets/*.webp
+!/assets/*.png
+!/assets/egfm-paper.pdf

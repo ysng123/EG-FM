@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Energy-Guided Flow Matching: image-adaptive flow paths with exact analytical velocity targets."
+    />
+    <meta name="theme-color" content="#ffffff" />
+    <title>Energy-Guided Flow Matching</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <aside class="page-toc" aria-label="On this page">
+      <a class="toc-brand" href="#top" aria-label="Energy-Guided Flow Matching overview">
+        <span class="brand-mark" aria-hidden="true">E</span>
+        <span>EG-FM</span>
+      </a>
+      <p>On this page</p>
+      <nav>
+        <a class="toc-link is-active" href="#top" aria-current="location">Overview</a>
+        <a class="toc-link" href="#overview">Abstract</a>
+        <a class="toc-link" href="#method">Method</a>
+        <a class="toc-link" href="#results">Quantitative</a>
+        <a class="toc-link" href="#qualitative">Qualitative</a>
+        <a class="toc-link" href="#citation">Citation</a>
+      </nav>
+    </aside>
+
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Energy-Guided Flow Matching home">
+        <span class="brand-mark" aria-hidden="true">E</span>
+        <span>EG-FM</span>
+      </a>
+
+      <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav">
+        <span class="sr-only">Open navigation</span>
+        <span></span><span></span>
+      </button>
+
+      <nav id="site-nav" class="site-nav" aria-label="Main navigation">
+        <a href="#overview">Abstract</a>
+        <a href="#method">Pipeline</a>
+        <a href="#results">Performance</a>
+        <a href="#qualitative">Gallery</a>
+        <a class="nav-button" href="https://github.com/ysng123/EG-FM/tree/main" target="_blank" rel="noopener noreferrer">Code</a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero section-shell" id="top">
+        <p class="kicker">Official project page and code release</p>
+        <h1>Energy-Guided Flow Matching</h1>
+        <div class="authors" aria-label="Authors and affiliations">
+          <p class="author-list">
+            Haoyang Tong<sup>*1,2</sup>, Yu He<sup>*2</sup>, Fang Li<sup>2</sup>,
+            Lichen Ma<sup>2,3</sup>, Jingling Fu<sup>2</sup>, Dong Chen<sup>2</sup>,
+            Zhen Chen<sup>2</sup>, Junshi Huang<sup>2</sup>, Jie Cao<sup>✉1</sup>
+          </p>
+          <p class="affiliations">
+            <span><sup>1</sup> MAIS &amp; NLPR, CASIA</span>
+            <span><sup>2</sup> JD.com</span>
+            <span><sup>3</sup> Xi’an Jiaotong University</span>
+          </p>
+          <p class="author-emails">
+            <a href="mailto:tonghaoyang22@mails.ucas.ac.cn">tonghaoyang22@mails.ucas.ac.cn</a>,
+            <a href="mailto:heyu2579@gmail.com">heyu2579@gmail.com</a>,
+            <a href="mailto:jie.cao@cripac.ia.ac.cn">jie.cao@cripac.ia.ac.cn</a>
+          </p>
+          <p class="author-notes">
+            <span class="author-note"><sup>*</sup><span>Equal contribution</span></span>
+            <span class="note-separator" aria-hidden="true">•</span>
+            <span class="author-note"><span class="corresponding-symbol" aria-hidden="true">✉</span><span>Corresponding author</span></span>
+          </p>
+        </div>
+        <p class="hero-description">
+          EG-FM explicitly models a coarse-to-fine generative trajectory by progressively releasing
+          image frequency information through a sample-adaptive moving endpoint.
+        </p>
+        <div class="hero-actions">
+          <a class="primary-button" href="https://arxiv.org/abs/2608.05811" target="_blank" rel="noopener noreferrer">Paper</a>
+          <a class="secondary-button" href="https://github.com/ysng123/EG-FM/tree/main" target="_blank" rel="noopener noreferrer">Code</a>
+          <a class="text-button" href="#results">Results <span aria-hidden="true">↓</span></a>
+        </div>
+
+        <section class="hero-chart" aria-labelledby="efficiency-title">
+          <div class="chart-shell" data-efficiency-chart>
+            <div class="chart-legend" data-chart-legend aria-label="Chart series controls"></div>
+            <div class="chart-canvas">
+              <svg data-chart-svg viewBox="0 0 920 470" role="img" aria-labelledby="efficiency-title chart-description"></svg>
+              <p id="chart-description" class="sr-only">Interactive line chart comparing FID across training epochs for PixelDiT and DeCo, with and without Energy-Guided Flow Matching.</p>
+              <div class="chart-tooltip" data-chart-tooltip hidden></div>
+            </div>
+            <p class="chart-note">EG-FM reaches 1.55 FID at 200 epochs—approximately 4× faster than PixelDiT-XL.</p>
+          </div>
+          <div class="chart-heading">
+            <div>
+              <p class="chart-kicker">ImageNet-256 · FID vs. training epochs</p>
+              <h2 id="efficiency-title">Faster convergence with EG-FM</h2>
+            </div>
+            <p>Hover or focus a point for its value. Select a legend item to compare individual series.</p>
+          </div>
+          <noscript><p class="chart-fallback">Enable JavaScript to explore the interactive convergence chart.</p></noscript>
+        </section>
+      </section>
+
+      <section class="overview section-shell" id="overview" aria-labelledby="overview-title">
+        <div class="section-content">
+          <h2 id="overview-title">Abstract</h2>
+          <p class="lead">
+            Pixel-space generative models bypass lossy latent compression, yet necessitate joint learning of
+            global structure and fine-grained details in a high-dimensional space. Standard flow matching
+            interpolates noise toward a fixed clean-image endpoint, leaving the spectral evolution to be learned
+            implicitly. In this paper, we introduce Energy-Guided Flow Matching(EG-FM) that explicitly models a
+            coarse-to-fine generative trajectory by moving endpoint. Specifically, EG-FM replaces the fixed
+            endpoint with a heat-kernel-filtered endpoint that evolves smoothly from low-frequency image to clean
+            image. The fraction of high-frequency signal in moving endpoint is released by an image-specific
+            energy-guided scheduling, leading to the re-targeting of velocity in flow matching. Our framework
+            requires no adaptation of the backbone and training data, bringing negligible cost on the training and
+            inference stages. In our experiment, EG-FM consistently achieves lower FID on the ImageNet
+            class-conditional image generation task at 256 × 256 with fewer epochs, reaching an FID of 1.55 at 200
+            epochs and 1.45 at 600 epochs. We continue training the generation task on the setting of 512×512
+            resolution, yielding a FID of 1.58 after only 40 high-resolution adaptation epochs. Furthermore, we
+            transfer EG-FM on text-to-image generation and achieve 0.85 on GenEval score and 83.9 on DPG-Bench.
+          </p>
+        </div>
+      </section>
+
+      <section class="contributions section-shell" id="method" aria-labelledby="method-title">
+        <div class="section-content">
+          <h2 id="method-title">Method</h2>
+          <p class="method-intro">
+            Energy-Guided Flow Matching constructs an image-adaptive coarse-to-fine trajectory by replacing
+            the fixed clean-image endpoint with a moving, heat-kernel-filtered endpoint. Each image follows
+            its own spectral energy schedule, progressively revealing structure and detail while retaining
+            an exact analytical velocity target for standard flow-matching training.
+          </p>
+          <figure class="paper-figure method-figure">
+            <img src="assets/method-overview.png" width="3024" height="1128" loading="lazy" alt="Overview of Energy-Guided Flow Matching from Figure 2 of the paper" />
+          </figure>
+        </div>
+      </section>
+
+      <section class="results" id="results" aria-labelledby="results-title">
+        <div class="section-shell results-inner">
+          <div class="section-content">
+            <div class="results-heading">
+              <div>
+                <p class="eyebrow">Experiments</p>
+                <h2 id="results-title">Quantitative results</h2>
+                <p>Controlled comparisons across class-conditional and text-to-image generation.</p>
+              </div>
+              <p class="evaluation-note">ImageNet metrics use 50K generated samples and the ADM evaluation suite. Best EG-FM results are highlighted.</p>
+            </div>
+
+            <div class="results-tabs" role="tablist" aria-label="Result category">
+              <button type="button" role="tab" aria-selected="true" aria-controls="imagenet-results" id="imagenet-tab" data-results-tab="imagenet-results">ImageNet Generation</button>
+              <button type="button" role="tab" aria-selected="false" aria-controls="t2i-results" id="t2i-tab" data-results-tab="t2i-results">Text-to-Image</button>
+            </div>
+
+            <div id="imagenet-results" class="results-panel" role="tabpanel" aria-labelledby="imagenet-tab" data-results-panel>
+              <div class="benchmark-heading">
+                <div><h3>ImageNet 256 × 256</h3><p>Class-conditional generation</p></div>
+                <span>Table 1</span>
+              </div>
+              <div class="result-table-wrap">
+                <table>
+                  <thead><tr><th>Method</th><th>Epochs</th><th>Params</th><th>NFE</th><th>FID ↓</th><th>sFID ↓</th><th>IS ↑</th><th>Prec. ↑</th><th>Recall ↑</th></tr></thead>
+                  <tbody>
+                    <tr><td>REPA</td><td>800</td><td>675M</td><td>250×2</td><td>1.42</td><td>4.70</td><td>305.7</td><td>0.80</td><td>0.65</td></tr>
+                    <tr><td>DDT-XL</td><td>400</td><td>675M</td><td>—</td><td>1.26</td><td>—</td><td>310.6</td><td>0.79</td><td>0.65</td></tr>
+                    <tr><td>RAE-XL</td><td>800</td><td>839M</td><td>—</td><td>1.13</td><td>—</td><td>262.6</td><td>0.78</td><td>0.67</td></tr>
+                    <tr><td>PixelFlow-XL</td><td>320</td><td>677M</td><td>120×2</td><td>1.98</td><td>5.83</td><td>282.1</td><td>0.81</td><td>0.60</td></tr>
+                    <tr><td>PixNerd-XL</td><td>320</td><td>700M</td><td>100×2</td><td>1.93</td><td>—</td><td>298.0</td><td>0.80</td><td>0.60</td></tr>
+                    <tr><td>JiT-G</td><td>600</td><td>2.0B</td><td>100×2</td><td>1.82</td><td>—</td><td>292.6</td><td>0.79</td><td>0.62</td></tr>
+                    <tr><td>PixelU-H/16</td><td>600</td><td>1.17B</td><td>100×2</td><td>1.63</td><td>5.04</td><td>305.9</td><td>0.79</td><td>0.64</td></tr>
+                    <tr><td>DiP-XL/16</td><td>600</td><td>631M</td><td>100×2</td><td>1.79</td><td>4.59</td><td>281.9</td><td>0.80</td><td>0.63</td></tr>
+                    <tr><td>FREPix-XL</td><td>320</td><td>674M</td><td>100×2</td><td>1.91</td><td>4.59</td><td>295.6</td><td>0.79</td><td>0.62</td></tr>
+                    <tr class="group-start"><td>DeCo-XL/16</td><td>600</td><td>682M</td><td>100×2</td><td>1.69</td><td>4.59</td><td>304.0</td><td>0.79</td><td>0.63</td></tr>
+                    <tr class="ours-row addon-row"><td>+ EG-FM</td><td>440</td><td>682M</td><td>100×2</td><td>1.63</td><td>4.78</td><td>300.1</td><td>0.79</td><td>0.62</td></tr>
+                    <tr class="group-start"><td>HyperDiT-H</td><td>600</td><td>952M</td><td>100×2</td><td>1.56</td><td>4.73</td><td>306.5</td><td>0.80</td><td>0.64</td></tr>
+                    <tr class="ours-row addon-row"><td>+ EG-FM</td><td>220</td><td>952M</td><td>100×2</td><td>1.51</td><td>4.31</td><td>293.4</td><td>0.78</td><td>0.64</td></tr>
+                    <tr class="group-start"><td>PixelDiT-XL</td><td>80</td><td>797M</td><td>100×2</td><td>2.36</td><td>5.11</td><td>282.3</td><td>0.80</td><td>0.57</td></tr>
+                    <tr><td>PixelDiT-XL</td><td>320</td><td>797M</td><td>100×2</td><td>1.61</td><td>4.68</td><td>292.7</td><td>0.78</td><td>0.64</td></tr>
+                    <tr><td>PixelDiT-XL</td><td>800</td><td>797M</td><td>100×2</td><td>1.54</td><td>4.49</td><td>297.0</td><td>0.78</td><td>0.65</td></tr>
+                    <tr class="ours-row addon-row"><td>+ EG-FM</td><td>80</td><td>797M</td><td>100×2</td><td>1.99</td><td>5.09</td><td>280.8</td><td>0.81</td><td>0.61</td></tr>
+                    <tr class="ours-row addon-row"><td>+ EG-FM</td><td>200</td><td>797M</td><td>100×2</td><td>1.55</td><td>4.60</td><td>296.2</td><td>0.79</td><td>0.65</td></tr>
+                    <tr class="ours-row addon-row best-row"><td>+ EG-FM</td><td>600</td><td>797M</td><td>100×2</td><td><strong>1.45</strong></td><td>4.41</td><td>299.6</td><td>0.78</td><td>0.65</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="benchmark-heading secondary-benchmark">
+                <div><h3>ImageNet 512 × 512</h3><p>High-resolution class-conditional generation</p></div>
+                <span>Table 7</span>
+              </div>
+              <div class="result-table-wrap">
+                <table>
+                  <thead><tr><th>Method</th><th>Epochs</th><th>Params</th><th>NFE</th><th>FID ↓</th><th>sFID ↓</th><th>IS ↑</th><th>Prec. ↑</th><th>Recall ↑</th></tr></thead>
+                  <tbody>
+                    <tr><td>DiT-XL/2</td><td>600</td><td>675M</td><td>250×2</td><td>3.04</td><td>5.02</td><td>240.8</td><td>0.84</td><td>0.54</td></tr>
+                    <tr><td>SiT-XL/2</td><td>600</td><td>675M</td><td>250×2</td><td>2.62</td><td>4.18</td><td>252.2</td><td>0.84</td><td>0.57</td></tr>
+                    <tr><td>REPA</td><td>200</td><td>675M</td><td>250×2</td><td>2.08</td><td>4.19</td><td>274.6</td><td>0.83</td><td>0.58</td></tr>
+                    <tr><td>PixNerd-XL†</td><td>320</td><td>700M</td><td>100×2</td><td>2.84</td><td>5.95</td><td>245.6</td><td>0.80</td><td>0.59</td></tr>
+                    <tr><td>JiT-H</td><td>600</td><td>956M</td><td>100×2</td><td>1.94</td><td>—</td><td>309.1</td><td>—</td><td>—</td></tr>
+                    <tr><td>PixelU-H/32</td><td>600</td><td>1.2B</td><td>100×2</td><td>1.92</td><td>5.98</td><td>322.1</td><td>0.80</td><td>0.58</td></tr>
+                    <tr><td>DiP-XL/32</td><td>—</td><td>631M</td><td>100×2</td><td>2.31</td><td>4.48</td><td>291.7</td><td>0.84</td><td>0.58</td></tr>
+                    <tr><td>DeCo-XL/16†</td><td>340</td><td>682M</td><td>100×2</td><td>2.22</td><td>4.67</td><td>290.0</td><td>0.80</td><td>0.60</td></tr>
+                    <tr class="group-start"><td>PixelDiT-XL†</td><td>850</td><td>797M</td><td>100×2</td><td>1.81</td><td>5.61</td><td>278.6</td><td>0.78</td><td>0.67</td></tr>
+                    <tr class="ours-row addon-row"><td>+ EG-FM†</td><td>240</td><td>797M</td><td>100×2</td><td>1.68</td><td>4.77</td><td>295.5</td><td>0.79</td><td>0.63</td></tr>
+                    <tr class="ours-row best-row"><td>HyperDiT-H + EG-FM†</td><td>260</td><td>952M</td><td>100×2</td><td><strong>1.58</strong></td><td>4.90</td><td>285.0</td><td>0.79</td><td>0.64</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="table-note">† Continued training from a 256 × 256 checkpoint. NFE includes conditional and unconditional classifier-free-guidance evaluations.</p>
+            </div>
+
+            <div id="t2i-results" class="results-panel" role="tabpanel" aria-labelledby="t2i-tab" data-results-panel hidden>
+              <div class="benchmark-heading">
+                <div><h3>GenEval at 512 × 512</h3><p>Category-wise text-to-image evaluation</p></div>
+                <span>Appendix Table 8</span>
+              </div>
+              <div class="result-table-wrap">
+                <table>
+                  <thead><tr><th>Method</th><th>Params</th><th>Single obj. ↑</th><th>Two obj. ↑</th><th>Counting ↑</th><th>Colors ↑</th><th>Position ↑</th><th>Color attr. ↑</th><th>Overall ↑</th></tr></thead>
+                  <tbody>
+                    <tr><td>PixArt-α</td><td>0.6B</td><td>0.98</td><td>0.50</td><td>0.44</td><td>0.80</td><td>0.08</td><td>0.07</td><td>0.48</td></tr>
+                    <tr><td>SD3</td><td>8B</td><td>0.98</td><td>0.84</td><td>0.66</td><td>0.74</td><td>0.40</td><td>0.43</td><td>0.68</td></tr>
+                    <tr><td>FLUX.1-dev</td><td>12B</td><td>0.99</td><td>0.81</td><td>0.79</td><td>0.74</td><td>0.20</td><td>0.47</td><td>0.67</td></tr>
+                    <tr><td>DALL-E 3</td><td>—</td><td>0.96</td><td>0.87</td><td>0.47</td><td>0.83</td><td>0.43</td><td>0.45</td><td>0.67</td></tr>
+                    <tr><td>BLIP3o</td><td>4B</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>0.81</td></tr>
+                    <tr><td>OmniGen2</td><td>4B</td><td>1.00</td><td>0.95</td><td>0.64</td><td>0.88</td><td>0.55</td><td>0.76</td><td>0.80</td></tr>
+                    <tr><td>PixelFlow</td><td>0.9B</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>0.60</td></tr>
+                    <tr><td>PixNerd</td><td>1.2B</td><td>0.97</td><td>0.86</td><td>0.44</td><td>0.83</td><td>0.71</td><td>0.53</td><td>0.73</td></tr>
+                    <tr><td>DeCo-XXL/16</td><td>1.1B</td><td>1.00</td><td>0.92</td><td>0.72</td><td>0.91</td><td>0.80</td><td>0.79</td><td><strong>0.86</strong></td></tr>
+                    <tr><td>PixelDiT-T2I</td><td>1.3B</td><td>1.00</td><td>0.94</td><td>0.70</td><td>0.90</td><td>0.53</td><td>0.65</td><td>0.78</td></tr>
+                    <tr class="ours-row best-row"><td>EG-FM-T2I</td><td>1.3B</td><td>1.00</td><td>0.95</td><td><strong>0.74</strong></td><td><strong>0.92</strong></td><td>0.72</td><td>0.77</td><td><strong>0.85</strong></td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="benchmark-heading secondary-benchmark">
+                <div><h3>DPG-Bench at 512 × 512</h3><p>Category-wise dense-prompt evaluation</p></div>
+                <span>Appendix Table 9</span>
+              </div>
+              <div class="result-table-wrap">
+                <table>
+                  <thead><tr><th>Method</th><th>Params</th><th>Global ↑</th><th>Entity ↑</th><th>Attribute ↑</th><th>Relation ↑</th><th>Other ↑</th><th>Overall ↑</th></tr></thead>
+                  <tbody>
+                    <tr><td>PixArt-α</td><td>0.6B</td><td>81.7</td><td>80.1</td><td>80.4</td><td>81.7</td><td>76.5</td><td>71.6</td></tr>
+                    <tr><td>PixArt-Σ</td><td>0.6B</td><td>87.5</td><td>87.1</td><td>86.5</td><td>84.0</td><td>86.1</td><td>79.5</td></tr>
+                    <tr><td>PixelFlow</td><td>0.9B</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>77.9</td></tr>
+                    <tr><td>PixNerd</td><td>1.2B</td><td>80.5</td><td>87.9</td><td>87.2</td><td><strong>91.3</strong></td><td>72.8</td><td>80.9</td></tr>
+                    <tr><td>DeCo-XXL/16</td><td>1.1B</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>81.4</td></tr>
+                    <tr><td>PixelDiT-T2I</td><td>1.3B</td><td>88.0</td><td><strong>90.9</strong></td><td>87.6</td><td>89.8</td><td>88.5</td><td>83.7</td></tr>
+                    <tr class="ours-row best-row"><td>EG-FM-T2I</td><td>1.3B</td><td><strong>89.3</strong></td><td>89.2</td><td><strong>90.2</strong></td><td>90.9</td><td><strong>89.7</strong></td><td><strong>83.9</strong></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="table-note">Appendix Tables 8 and 9 decompose aggregate text alignment into object, counting, color, spatial, entity, attribute, and relation capabilities. A dash indicates an unreported item.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="qualitative section-shell" id="qualitative" aria-labelledby="qualitative-title">
+        <div class="section-content">
+          <h2 id="qualitative-title">Qualitative results</h2>
+          <p class="gallery-intro">The main qualitative overview from the paper.</p>
+
+          <figure class="teaser-figure">
+            <img src="assets/teaser.webp" width="3024" height="960" loading="lazy" alt="Qualitative class-conditional and text-to-image samples generated with EG-FM" />
+          </figure>
+
+          <figure class="teaser-figure t2i-figure">
+            <img src="assets/t2i-samples.png" loading="lazy" alt="Text-to-image samples generated with EG-FM" />
+            <figcaption>Text-to-image samples generated with EG-FM.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="citation section-shell" id="citation" aria-labelledby="citation-title">
+        <div class="section-content">
+          <h2 id="citation-title">Citation</h2>
+          <p>If you find this work useful, please cite:</p>
+          <pre class="citation-code"><code>@article{tong2026energy,
+  title   = {Energy-Guided Flow Matching},
+  author  = {Tong, Haoyang and He, Yu and Li, Fang and Ma, Lichen and Fu, Jingling and Chen, Dong and Chen, Zhen and Huang, Junshi and Cao, Jie},
+  journal = {arXiv preprint arXiv:2608.05811},
+  year    = {2026}
+}</code></pre>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer section-shell">
+      <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">E</span><span>EG-FM</span></a>
+      <p>Official implementation of Energy-Guided Flow Matching.</p>
+      <a href="#top">Back to top ↑</a>
+    </footer>
+  </body>
+</html>
