@@ -96,13 +96,14 @@ def prediction_to_velocity(
 ) -> torch.Tensor:
     """Convert a velocity or x-prediction network output to path velocity."""
     prediction = validate_image(prediction, "prediction")
-    validate_matching_image(state, prediction, "state")
 
     if target == "velocity":
         return prediction
     if target != "x":
         raise ValueError(f"Unsupported prediction target: {target}")
-
+    state = validate_image(state, "state")
+    prediction = prediction.to(state.dtype)
+    validate_matching_image(state, prediction, "state")
     eps_value = finite_nonnegative_scalar(eps, "eps")
     if eps_value == 0:
         raise ValueError("eps must be positive")
