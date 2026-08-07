@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "energy-guided-flow-matching"
+version = "0.1.0"
+description = "Backbone-independent PyTorch paths and objectives for Energy-Guided Flow Matching"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+  { name = "Energy-Guided Flow Matching Authors" },
+]
+keywords = ["deep-learning", "flow-matching", "generative-models", "pytorch"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Typing :: Typed",
+]
+dependencies = [
+  "torch>=2.8,<2.9",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["egfm*"]
+
+[tool.setuptools.package-data]
+egfm = ["py.typed"]
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-markers"
+testpaths = ["tests"]

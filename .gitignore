@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.DS_Store
+*.log
+events.out.tfevents.*
+wandb/
+outputs/
+samples/
+eval_samples/
+/checkpoints/
+*.pth
+*.pt
+*.ckpt
+*.tmp-*
