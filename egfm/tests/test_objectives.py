@@ -119,7 +119,7 @@ def test_custom_path_result_is_validated(
 
 def test_prediction_to_velocity_is_identity_without_calling_path() -> None:
     prediction = torch.randn(2, 1, 2, 2)
-    state = torch.randn_like(prediction)
+    state = torch.randn(2, 1, 2, 2, dtype=torch.float64)
 
     def fail_if_called(*args: object) -> object:
         raise AssertionError("velocity prediction must not evaluate the path")
@@ -169,10 +169,23 @@ def test_prediction_conversion_validation() -> None:
             prediction, state, time, path, target="x", eps=float("nan")
         )
     with pytest.raises(ValueError, match="shape"):
-        prediction_to_velocity(prediction, state[:1], time, path)
-    with pytest.raises(TypeError, match="same dtype"):
-        prediction_to_velocity(prediction, state.double(), time, path)
+        prediction_to_velocity(prediction, state[:1], time, path, target="x")
     with pytest.raises(TypeError, match="floating-point"):
         prediction_to_velocity(
             prediction, state, time.long(), path, target="x"
         )
+
+
+def test_x_prediction_is_promoted_to_state_dtype() -> None:
+    prediction = torch.ones(2, 1, 2, 2, dtype=torch.bfloat16)
+    state = torch.zeros(2, 1, 2, 2, dtype=torch.float32)
+
+    velocity = prediction_to_velocity(
+        prediction,
+        state,
+        torch.tensor([0.2, 0.8]),
+        AffineEndpoint(),
+        target="x",
+    )
+
+    assert velocity.dtype == state.dtype
