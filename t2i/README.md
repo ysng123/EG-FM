@@ -61,14 +61,18 @@ including optimizer state and global step.
 ## Inference
 
 ```bash
-CHECKPOINT=/path/to/checkpoint-last.pth \
 TEXT_ENCODER_PATH=/path/to/gemma-2-2b-it \
 bash t2i/scripts/infer.sh
 ```
 
-The inference entry point loads EMA1 by default, uses 25-step FlowDPM with CFG
-4 over the full interval, and writes PNG files plus `sampling.json`. Settings
-stored in the checkpoint are used unless explicitly overridden:
+The launcher defaults to the packaged SFT-512 step-40,000 checkpoint at
+`../checkpoint/t2i/512/checkpoint-40000.pth` and its EMA2 weights. This
+checkpoint reproduces the reported DPG-Bench score (83.8768, reported as
+83.9); the available local GenEval summary is 0.81780 and does not reproduce
+the paper's 0.85. Set `CHECKPOINT=/another/checkpoint.pth` or `WEIGHTS=ema1`
+to override it. The inference entry point uses 25-step FlowDPM with CFG 4 over
+the full interval and writes PNG files plus `sampling.json`. Settings stored
+in the checkpoint are used unless explicitly overridden:
 
 ```bash
 python t2i/inference.py \

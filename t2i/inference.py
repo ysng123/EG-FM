@@ -32,7 +32,7 @@ def get_parser():
     parser.add_argument("--samples_per_prompt", default=1, type=int)
     parser.add_argument("--batch_size", default=1, type=int)
     parser.add_argument("--output_dir", type=Path, default=PROJECT_ROOT / "samples/t2i")
-    parser.add_argument("--weights", choices=("ema1", "ema2", "model"), default="ema1")
+    parser.add_argument("--weights", choices=("ema1", "ema2", "model"), default="ema2")
     parser.add_argument("--text_encoder_path", default=None)
     parser.add_argument("--allow_text_encoder_download", action="store_true")
     parser.add_argument("--img_size", default=None, type=int)
