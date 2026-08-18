@@ -35,6 +35,7 @@ img { max-width: 100%; height: auto; }
 .site-nav { display: flex; align-items: center; gap: 22px; color: #465266; font-size: 11px; font-weight: 500; }
 .site-nav a:hover { color: var(--blue); }
 .nav-button { padding: 8px 12px; color: var(--blue) !important; border: 1px solid #b8c9dd; border-radius: 2px; }
+.hf-icon { display: inline-block; margin-right: 3px; font-size: 1.5em; line-height: 0; vertical-align: -.12em; }
 .is-disabled { cursor: default; user-select: none; }
 .menu-button { display: none; width: 36px; height: 36px; padding: 8px; border: 0; background: transparent; }
 .menu-button span:not(.sr-only) { display: block; width: 100%; height: 1px; margin: 6px 0; background: currentColor; }
