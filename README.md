@@ -84,6 +84,17 @@ Run inference with the following script. It uses `checkpoints/pixeldit600/checkp
 bash scripts/eval_pixeldit_imagenet256.sh
 ```
 
+For a 512×512 checkpoint, run:
+
+```bash
+CHECKPOINT=/path/to/checkpoint-240.pth \
+bash scripts/eval_pixeldit_imagenet512.sh
+```
+
+The 512×512 script uses the bundled ImageNet 512 FID statistics by default. Set
+`FID_STATS=` to keep the generated images without calculating FID, or set it to
+another compatible statistics file.
+
 ## Training
 
 Train the first stage through checkpoint 160:
@@ -106,6 +117,22 @@ bash scripts/train_pixeldit_imagenet256.sh
 ```
 
 The reference configuration uses `sigma0=3.5`, `smootherstep`, release interval `[0,1]`, 16 bisection iterations, lognormal time sampling `sigmoid(N(0,1))`, velocity prediction, and REPA weight 0.5 at patch block 8.
+
+Continue a 256×256 checkpoint at 512×512 resolution. By default the training
+stop boundary is epoch 400, it uses a per-GPU batch size of 8, and writes to
+`outputs/pixeldit_xl_imagenet512`:
+
+```bash
+DATA_PATH=/path/to/imagenet \
+RESUME_CHECKPOINT=outputs/pixeldit_stage2/checkpoint-200.pth \
+NPROC_PER_NODE=8 \
+bash scripts/train_pixeldit_imagenet512.sh
+```
+
+The checkpoint's epoch determines the starting epoch; set `EPOCHS=241` when only
+continuing through epoch 240. Following the reference JIT_Pixeldit run, the
+default configuration uses a constant learning rate of `1e-5`, time shift 3,
+seed 42, and online evaluation every 20 epochs with CFG 3.0 over `[0.1,0.9]`.
 
 ## EG-FM integration examples
 
