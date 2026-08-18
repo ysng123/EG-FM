@@ -1,0 +1,4 @@
+# Install after the repository-level requirements.txt.
+transformers>=4.44,<5
+datasets>=2.20,<4
+sentencepiece>=0.2

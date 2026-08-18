@@ -11,7 +11,7 @@ EG-FM constructs the moving endpoint, its endpoint velocity, the training state,
 The remaining code and checkpoints will be released within two weeks.
 
 - [x] C2I training and inference code
-- [ ] T2I training and inference code
+- [x] T2I training and inference code
 - [ ] ImageNet 256×256 checkpoint
 - [ ] ImageNet 512×512 checkpoint
 - [ ] T2I checkpoint
@@ -133,6 +133,14 @@ The checkpoint's epoch determines the starting epoch; set `EPOCHS=241` when only
 continuing through epoch 240. Following the reference JIT_Pixeldit run, the
 default configuration uses a constant learning rate of `1e-5`, time shift 3,
 seed 42, and online evaluation every 20 epochs with CFG 3.0 over `[0.1,0.9]`.
+
+## Text-to-image
+
+The complete PixelDiT-T2I training and inference implementation is available
+under [`t2i/`](t2i/). It includes BLIP3o tar/WebDataset loading, frozen Gemma
+conditioning, the EG-FM moving endpoint objective, dual EMA checkpoints, and
+25-step FlowDPM sampling. See [`t2i/README.md`](t2i/README.md) for stage tables
+and launch commands.
 
 ## EG-FM integration examples
 
