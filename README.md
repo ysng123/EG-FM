@@ -2,7 +2,7 @@
 
 ![EG-FM text-to-image samples](assets/t2i-samples.png)
 
-Official code release for **Energy-Guided Flow Matching (EG-FM)**, including the reusable path library, the class-conditional PixelDiT-XL/16 ImageNet 256×256 implementation, and two integration examples. PixelDiT is the directly runnable reference implementation: its entry points, models, scripts, and tests live in the repository root instead of a nested project.
+Official code release for **[Energy-Guided Flow Matching (EG-FM)](https://arxiv.org/abs/2608.05811)**, including the reusable path library, the class-conditional PixelDiT-XL/16 implementations for ImageNet at 256×256 and 512×512, the text-conditioned PixelDiT implementation for text-to-image generation on BLIP3o, and two integration examples. PixelDiT is the directly runnable reference implementation: its entry points, models, scripts, and tests live in the repository root instead of a nested project.
 
 EG-FM constructs the moving endpoint, its endpoint velocity, the training state, and the exact velocity target during training.
 

@@ -1,9 +1,6 @@
 # PixelDiT-T2I + EG-FM
 
 This directory contains the released text-to-image training and inference path.
-The model and stage recipe follow the PixelDiT Gaussian T2I implementation,
-while the moving endpoint and exact target come from the repository's public
-`egfm` package. Nothing under `example/` is used or modified.
 
 ## Setup
 
@@ -39,7 +36,6 @@ launcher:
 | `pretrain256` | 256 | 128 | 200,000 | 0.5 |
 | `pretrain512` | 512 | 48 | 100,000 | 0.0 |
 | `sft512` | 512 | 48 | 100,000 | 0.0 |
-| `sft1024` | 1024 | 8 | 100,000 | 0.0 |
 
 All stages default to CAME, learning rate `1e-4`, 2,000 warmup steps,
 gradient clipping `0.2`, `flow_shift=3`, `sigma0=3.5`, smootherstep release,
