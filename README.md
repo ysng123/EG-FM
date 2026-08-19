@@ -12,8 +12,8 @@ The remaining code and checkpoints will be released within two weeks.
 
 - [x] C2I training and inference code
 - [x] T2I training and inference code
-- [ ] ImageNet 256×256 checkpoint
-- [ ] ImageNet 512×512 checkpoint
+- [x] ImageNet 256×256 checkpoint has been released in [huggingface](https://huggingface.co/ysng/EG-FM-ImageNet)
+- [x] ImageNet 512×512 checkpoint has been released in [huggingface](https://huggingface.co/ysng/EG-FM-ImageNet)
 - [ ] T2I checkpoint
 
 ## Energy-Guided Flow Matching
