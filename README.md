@@ -1,20 +1,12 @@
 # Energy-Guided Flow Matching (EG-FM)
 
+[![Project Page](https://img.shields.io/badge/Project-Page-536DFE)](https://github.com/ysng123/EG-FM) [![Paper PDF](https://img.shields.io/badge/Paper-PDF-B31B1B)](https://arxiv.org/pdf/2608.05811) [![Hugging Face ImageNet](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-ImageNet-FFD21E)](https://huggingface.co/ysng/EG-FM-ImageNet) [![Hugging Face T2I](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-T2I-FFD21E)](https://huggingface.co/ysng/EG-FM-T2I)
+
 ![EG-FM text-to-image samples](assets/t2i-samples.png)
 
 Official code release for **[Energy-Guided Flow Matching (EG-FM)](https://arxiv.org/abs/2608.05811)**, including the reusable path library, the class-conditional PixelDiT-XL/16 implementations for ImageNet at 256×256 and 512×512, the text-conditioned PixelDiT implementation for text-to-image generation on BLIP3o, and two integration examples. PixelDiT is the directly runnable reference implementation: its entry points, models, scripts, and tests live in the repository root instead of a nested project.
 
 EG-FM constructs the moving endpoint, its endpoint velocity, the training state, and the exact velocity target during training.
-
-##  TODO
-
-The remaining code and checkpoints will be released within two weeks.
-
-- [x] C2I training and inference code
-- [x] T2I training and inference code
-- [x] ImageNet 256×256 checkpoint has been released in [huggingface](https://huggingface.co/ysng/EG-FM-ImageNet)
-- [x] ImageNet 512×512 checkpoint has been released in [huggingface](https://huggingface.co/ysng/EG-FM-ImageNet)
-- [ ] T2I checkpoint
 
 ## Energy-Guided Flow Matching
 
@@ -69,7 +61,7 @@ This repository discovers the bundled `egfm/src` automatically; only when migrat
 
 ## Inference
 
-Run distributed inference from the repository root to generate and evaluate 50K samples. The released checkpoints produce the following results:
+Run distributed inference from the repository root to generate and evaluate 50K samples. The released [ImageNet checkpoints](https://huggingface.co/ysng/EG-FM-ImageNet) produce the following results:
 
 | Backbone | Epochs | torch-fidelity FID↓ | ADM FID↓ |
 |---|---:|---:|---:|
@@ -140,7 +132,8 @@ The complete PixelDiT-T2I training and inference implementation is available
 under [`t2i/`](t2i/). It includes BLIP3o tar/WebDataset loading, frozen Gemma
 conditioning, the EG-FM moving endpoint objective, dual EMA checkpoints, and
 25-step FlowDPM sampling. See [`t2i/README.md`](t2i/README.md) for stage tables
-and launch commands.
+and launch commands. The released checkpoint is available on
+[Hugging Face](https://huggingface.co/ysng/EG-FM-T2I).
 
 ## EG-FM integration examples
 
