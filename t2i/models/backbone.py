@@ -322,9 +322,10 @@ class PixelDiTT2I(nn.Module):
             batch, text_tokens, self.hidden_size
         )
         text_state = text_state + self.y_pos_embedding[:, :text_tokens].to(text_state.dtype)
-        attention_mask = self._joint_attention_mask(
-            mask, batch, text_tokens, image_tokens, x.device
-        )
+        # attention_mask = self._joint_attention_mask(
+        #     mask, batch, text_tokens, image_tokens, x.device
+        # )
+        attention_mask = None
         self.last_repa_tokens = None
         for index, block in enumerate(self.patch_blocks, start=1):
             image_state, text_state = block(
